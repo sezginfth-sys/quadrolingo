@@ -1,1 +1,8 @@
-
+{
+  "name": "quadrolingo",
+  "version": "1.0.0",
+  "description": "4 Dilde Ücretsiz Çeviri",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  }
+}
