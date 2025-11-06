@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="Quadrolingo - 4 Dilde Ücretsiz Çeviri">
+    <title>Quadrolingo - 4 Dilde Ücretsiz Çeviri</title>
+    
+    <!-- Google Adsense (sonra ekleyeceğiz) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+    
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            min-height: 100vh;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 25px;
+            margin-bottom: 15px;
+            border: 4px solid #4299e1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            object-fit: cover;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.8rem;
+            margin: 10px 0;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        input, select, button {
+            margin: 5px;
+            padding: 12px 15px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            min-height: 44px;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+        }
+
+        #word {
+            width: 300px;
+            font-size: 18px;
+        }
+
+        .lang-selectors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .lang-select {
+            width: 100%;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4299e1, #667eea);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            padding: 15px 30px;
+            font-size: 16px;
+            min-height: 44px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        #result {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: left;
+            border: 2px solid #e2e8f0;
+        }
+
+        .translation-item {
+            margin: 15px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            border-left: 5px solid #4299e1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .lang-name {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .translation-text {
+            color: #4a5568;
+            margin: 12px 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .loading {
+            color: #4299e1;
+            font-size: 1.2rem;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .error {
+            color: #e53e3e;
+            background: #fed7d7;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #e53e3e;
+            font-size: 1.1rem;
+        }
+
+        .success {
+            color: #38a169;
+            background: #f0fff4;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #38a169;
+            font-size: 1.1rem;
+        }
+
+        /* Reklam alanları */
+        .ad-container {
+            margin: 20px 0;
+            text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px dashed #e2e8f0;
+        }
+
+        .ad-placeholder {
+            color: #718096;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+            #word {
+                width: 90%;
+            }
+            .lang-selectors {
+                grid-template-columns: 1fr;
+            }
+            .buttons {
+                flex-direction: column;
+            }
+            .btn-primary {
+                width: 100%;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Reklam Alanı 1 - Header Altı -->
+        <div class="ad-container">
+            <div class="ad-placeholder">
+                🎯 Reklam Alanı - Buraya Google AdSense gelecek
+            </div>
+        </div>
+
+        <div class="header">
+            <img src="https://i.ibb.co/ycpxrytR/ef5f432e-4b33-4971-acb5-13eaff9c8702.png" alt="Quadrolingo Logo" class="logo">
+            <h1>Quadrolingo</h1>
+            <p class="subtitle">4 Dilde Ücretsiz Çeviri - Anında Çevir</p>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="word" placeholder="Çevirmek istediğiniz kelimeyi yazın..." />
+        </div>
+
+        <div class="lang-selectors">
+            <select id="lang1" class="lang-select">
+                <option value="Türkçe">Türkçe</option>
+                <option value="İngilizce">İngilizce</option>
+                <option value="Almanca">Almanca</option>
+                <option value="Fransızca">Fransızca</option>
+                <option value="İspanyolca">İspanyolca</option>
+                <option value="İtalyanca">İtalyanca</option>
+                <option value="Rusça">Rusça</option>
+                <option value="Çince">Çince</option>
+                <option value="Japonca">Japonca</option>
+                <option value="Korece">Korece</option>
+                <option value="Arapça">Arapça</option>
+            </select>
+
+            <select id="lang2" class="lang-select">
+                <option value="İngilizce">İngilizce</option>
+                <option value="Türkçe">Türkçe</option>
+                <option value="Almanca">Almanca</option>
+                <option value="Fransızca">Fransızca</option>
+                <option value="İspanyolca">İspanyolca</option>
+                <option value="İtalyanca">İtalyanca</option>
+                <option value="Rusça">Rusça</option>
+                <option value="Çince">Çince</option>
+                <option value="Japonca">Japonca</option>
+                <option value="Korece">Korece</option>
+                <option value="Arapça">Arapça</option>
+            </select>
+
+            <select id="lang3" class="lang-select">
+                <option value="Almanca">Almanca</option>
+                <option value="Türkçe">Türkçe</option>
+                <option value="İngilizce">İngilizce</option>
+                <option value="Fransızca">Fransızca</option>
+                <option value="İspanyolca">İspanyolca</option>
+                <option value="İtalyanca">İtalyanca</option>
+                <option value="Rusça">Rusça</option>
+                <option value="Çince">Çince</option>
+                <option value="Japonca">Japonca</option>
+                <option value="Korece">Korece</option>
+                <option value="Arapça">Arapça</option>
+            </select>
+
+            <select id="lang4" class="lang-select">
+                <option value="Fransızca">Fransızca</option>
+                <option value="Türkçe">Türkçe</option>
+                <option value="İngilizce">İngilizce</option>
+                <option value="Almanca">Almanca</option>
+                <option value="İspanyolca">İspanyolca</option>
+                <option value="İtalyanca">İtalyanca</option>
+                <option value="Rusça">Rusça</option>
+                <option value="Çince">Çince</option>
+                <option value="Japonca">Japonca</option>
+                <option value="Korece">Korece</option>
+                <option value="Arapça">Arapça</option>
+            </select>
+        </div>
+
+        <div class="buttons">
+            <button class="btn-primary" onclick="translateWord()">🌐 Çevir</button>
+        </div>
+
+        <!-- Reklam Alanı 2 - Buton Altı -->
+        <div class="ad-container">
+            <div class="ad-placeholder">
+                📱 Mobil Reklam Alanı
+            </div>
+        </div>
+
+        <div id="result">
+            <div class="success">
+                🚀 Quadrolingo'ya hoş geldiniz!<br>
+                • Bir kelime yazın<br>
+                • 4 dil seçin<br>
+                • Çevir butonuna tıklayın<br>
+                • Çevirileri görün
+            </div>
+        </div>
+
+        <!-- Reklam Alanı 3 - Footer -->
+        <div class="ad-container">
+            <div class="ad-placeholder">
+                🔗 Link Reklamları Alanı
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function translateWord() {
+            const word = document.getElementById("word").value.trim();
+            const langs = [
+                document.getElementById("lang1").value,
+                document.getElementById("lang2").value,
+                document.getElementById("lang3").value,
+                document.getElementById("lang4").value
+            ];
+
+            if (!word) {
+                alert("Lütfen çevirmek için bir kelime yazın!");
+                return;
+            }
+
+            const uniqueLangs = [...new Set(langs)];
+            if (uniqueLangs.length !== langs.length) {
+                alert("Lütfen farklı diller seçin!");
+                return;
+            }
+
+            document.getElementById("result").innerHTML = '<div class="loading">⏳ Çeviri yapılıyor...</div>';
+
+            try {
+                const response = await fetch('/.netlify/functions/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ word, langs })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayResults(result.data);
+                } else {
+                    displayError(result.error);
+                }
+            } catch (error) {
+                displayError("Bağlantı hatası: " + error.message);
+            }
+        }
+
+        function displayResults(result) {
+            const resultDiv = document.getElementById("result");
+            
+            if (result.startsWith("❌") || result.startsWith("⚠️")) {
+                resultDiv.innerHTML = `<div class="error">${result}</div>`;
+                return;
+            }
+
+            const translations = result.split('\n').filter(line => line.trim());
+            
+            let html = '<h3>🎯 Çeviri Sonuçları:</h3>';
+            
+            translations.forEach(translation => {
+                const [lang, text] = translation.split(': ');
+                if (lang && text) {
+                    html += `
+                        <div class="translation-item">
+                            <div class="lang-name">${lang}</div>
+                            <div class="translation-text">${text}</div>
+                        </div>
+                    `;
+                }
+            });
+            
+            resultDiv.innerHTML = html;
+        }
+
+        function displayError(error) {
+            document.getElementById("result").innerHTML = 
+                `<div class="error">❌ ${error}</div>`;
+        }
+
+        document.getElementById('word').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                translateWord();
+            }
+        });
+
+        // Sayfa yüklendiğinde input'a odaklan
+        window.addEventListener('load', function() {
+            document.getElementById('word').focus();
+        });
+    </script>
+</body>
+</html>
