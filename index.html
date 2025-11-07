@@ -7,9 +7,6 @@
     <meta name="description" content="Quadrolingo - 4 Dilde Ücretsiz Çeviri">
     <title>Quadrolingo - 4 Dilde Ücretsiz Çeviri</title>
     
-    <!-- Google Adsense (sonra ekleyeceğiz) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
-    
     <style>
         body {
             font-family: "Segoe UI", Arial, sans-serif;
@@ -122,6 +119,10 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
         #result {
             background: #f7fafc;
             border-radius: 15px;
@@ -152,6 +153,18 @@
             margin: 12px 0;
             font-size: 1.3rem;
             font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .transliteration {
+            color: #718096;
+            font-size: 1rem;
+            font-style: italic;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #f7fafc;
+            border-radius: 6px;
+            border-left: 3px solid #4299e1;
         }
 
         .loading {
@@ -195,32 +208,122 @@
             padding: 20px;
         }
 
-        /* Mobile */
+        /* Language selector */
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .lang-btn {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        /* Mobile optimizasyonları */
         @media (max-width: 768px) {
             .container {
                 margin: 10px;
                 padding: 20px;
+                border-radius: 15px;
             }
+            
             #word {
                 width: 90%;
+                font-size: 16px;
             }
+            
             .lang-selectors {
                 grid-template-columns: 1fr;
+                gap: 10px;
             }
+            
             .buttons {
                 flex-direction: column;
             }
+            
             .btn-primary {
                 width: 100%;
+                margin: 5px 0;
             }
+            
             h1 {
                 font-size: 2.2rem;
             }
+            
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+
+            .lang-switcher {
+                position: static;
+                margin-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                margin: 0;
+                padding: 15px;
+                border-radius: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+            
+            #word {
+                width: 95%;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        /* Loading animasyonu */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading::before {
+            content: "⏳";
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Dil Değiştirici -->
+        <div class="lang-switcher">
+            <button class="lang-btn" onclick="changeLanguage('tr')">🇹🇷 TR</button>
+            <button class="lang-btn" onclick="changeLanguage('en')">🇺🇸 EN</button>
+            <button class="lang-btn" onclick="changeLanguage('de')">🇩🇪 DE</button>
+        </div>
+
         <!-- Reklam Alanı 1 - Header Altı -->
         <div class="ad-container">
             <div class="ad-placeholder">
@@ -230,8 +333,8 @@
 
         <div class="header">
             <img src="https://i.ibb.co/ycpxrytR/ef5f432e-4b33-4971-acb5-13eaff9c8702.png" alt="Quadrolingo Logo" class="logo">
-            <h1>Quadrolingo</h1>
-            <p class="subtitle">4 Dilde Ücretsiz Çeviri - Anında Çevir</p>
+            <h1 id="appTitle">Quadrolingo</h1>
+            <p class="subtitle" id="appSubtitle">4 Dilde Ücretsiz Çeviri - Anında Çevir</p>
         </div>
 
         <div class="input-group">
@@ -251,6 +354,14 @@
                 <option value="Japonca">Japonca</option>
                 <option value="Korece">Korece</option>
                 <option value="Arapça">Arapça</option>
+                <option value="Portekizce">Portekizce</option>
+                <option value="Lehçe">Lehçe</option>
+                <option value="Hollandaca">Hollandaca</option>
+                <option value="Yunanca">Yunanca</option>
+                <option value="İsveççe">İsveççe</option>
+                <option value="Norveççe">Norveççe</option>
+                <option value="Danca">Danca</option>
+                <option value="Fince">Fince</option>
             </select>
 
             <select id="lang2" class="lang-select">
@@ -265,6 +376,14 @@
                 <option value="Japonca">Japonca</option>
                 <option value="Korece">Korece</option>
                 <option value="Arapça">Arapça</option>
+                <option value="Portekizce">Portekizce</option>
+                <option value="Lehçe">Lehçe</option>
+                <option value="Hollandaca">Hollandaca</option>
+                <option value="Yunanca">Yunanca</option>
+                <option value="İsveççe">İsveççe</option>
+                <option value="Norveççe">Norveççe</option>
+                <option value="Danca">Danca</option>
+                <option value="Fince">Fince</option>
             </select>
 
             <select id="lang3" class="lang-select">
@@ -279,6 +398,14 @@
                 <option value="Japonca">Japonca</option>
                 <option value="Korece">Korece</option>
                 <option value="Arapça">Arapça</option>
+                <option value="Portekizce">Portekizce</option>
+                <option value="Lehçe">Lehçe</option>
+                <option value="Hollandaca">Hollandaca</option>
+                <option value="Yunanca">Yunanca</option>
+                <option value="İsveççe">İsveççe</option>
+                <option value="Norveççe">Norveççe</option>
+                <option value="Danca">Danca</option>
+                <option value="Fince">Fince</option>
             </select>
 
             <select id="lang4" class="lang-select">
@@ -293,11 +420,19 @@
                 <option value="Japonca">Japonca</option>
                 <option value="Korece">Korece</option>
                 <option value="Arapça">Arapça</option>
+                <option value="Portekizce">Portekizce</option>
+                <option value="Lehçe">Lehçe</option>
+                <option value="Hollandaca">Hollandaca</option>
+                <option value="Yunanca">Yunanca</option>
+                <option value="İsveççe">İsveççe</option>
+                <option value="Norveççe">Norveççe</option>
+                <option value="Danca">Danca</option>
+                <option value="Fince">Fince</option>
             </select>
         </div>
 
         <div class="buttons">
-            <button class="btn-primary" onclick="translateWord()">🌐 Çevir</button>
+            <button class="btn-primary" onclick="translateWord()" id="translateBtn">🌐 Çevir</button>
         </div>
 
         <!-- Reklam Alanı 2 - Buton Altı -->
@@ -308,7 +443,7 @@
         </div>
 
         <div id="result">
-            <div class="success">
+            <div class="success" id="welcomeMessage">
                 🚀 Quadrolingo'ya hoş geldiniz!<br>
                 • Bir kelime yazın<br>
                 • 4 dil seçin<br>
@@ -326,27 +461,126 @@
     </div>
 
     <script>
+        // ÇOK DİLLİ ARAYÜZ DESTEĞİ
+        const translations = {
+            'tr': {
+                title: "Quadrolingo - 4 Dilde Ücretsiz Çeviri",
+                subtitle: "Bir kelimeyi 4 dilde anında çevirin",
+                placeholder: "Çevirmek istediğiniz kelimeyi yazın...",
+                translateBtn: "🌐 Çevir",
+                welcome: "🚀 Quadrolingo'ya hoş geldiniz!",
+                instructions: "• Bir kelime yazın<br>• 4 dil seçin<br>• Çevir butonuna tıklayın<br>• Çevirileri görün",
+                results: "🎯 Çeviri Sonuçları:",
+                loading: "⏳ Çeviri yapılıyor...",
+                sameLangError: "Lütfen farklı diller seçin!",
+                noWordError: "Lütfen çevirmek için bir kelime yazın!"
+            },
+            'en': {
+                title: "Quadrolingo - Free Translation in 4 Languages", 
+                subtitle: "Instantly translate a word into 4 languages",
+                placeholder: "Enter the word you want to translate...",
+                translateBtn: "🌐 Translate",
+                welcome: "🚀 Welcome to Quadrolingo!",
+                instructions: "• Enter a word<br>• Select 4 languages<br>• Click Translate button<br>• See translations", 
+                results: "🎯 Translation Results:",
+                loading: "⏳ Translating...",
+                sameLangError: "Please select different languages!",
+                noWordError: "Please enter a word to translate!"
+            },
+            'de': {
+                title: "Quadrolingo - Kostenlose Übersetzung in 4 Sprachen",
+                subtitle: "Übersetzen Sie ein Wort sofort in 4 Sprachen", 
+                placeholder: "Geben Sie das zu übersetzende Wort ein...",
+                translateBtn: "🌐 Übersetzen",
+                welcome: "🚀 Willkommen bei Quadrolingo!",
+                instructions: "• Wort eingeben<br>• 4 Sprachen auswählen<br>• Übersetzen klicken<br>• Übersetzungen anzeigen",
+                results: "🎯 Übersetzungsergebnisse:",
+                loading: "⏳ Wird übersetzt...", 
+                sameLangError: "Bitte wählen Sie verschiedene Sprachen!",
+                noWordError: "Bitte geben Sie ein Wort zum Übersetzen ein!"
+            }
+        };
+
+        // MEVCUT DİL
+        let currentLanguage = 'en';
+
+        // KULLANICI DİLİNİ AL
+        function getUserLanguage() {
+            const browserLang = navigator.language || navigator.userLanguage;
+            const shortLang = browserLang.split('-')[0];
+            
+            // Desteklenen diller
+            const supportedLangs = ['tr', 'en', 'de'];
+            
+            return supportedLangs.includes(shortLang) ? shortLang : 'en';
+        }
+
+        // ARAYÜZÜ GÜNCELLE
+        function updateUILanguage(lang) {
+            currentLanguage = lang;
+            const texts = translations[lang];
+            
+            if (!texts) return;
+            
+            // Title ve meta description güncelle
+            document.title = texts.title;
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) {
+                metaDesc.setAttribute('content', texts.title);
+            }
+            
+            // Elementleri güncelle
+            const elements = {
+                'appTitle': texts.title,
+                'appSubtitle': texts.subtitle, 
+                'word': { placeholder: texts.placeholder },
+                'translateBtn': texts.translateBtn,
+                'welcomeMessage': `${texts.welcome}<br>${texts.instructions}`
+            };
+            
+            for (const [id, text] of Object.entries(elements)) {
+                const element = document.getElementById(id);
+                if (element) {
+                    if (id === 'welcomeMessage') {
+                        element.innerHTML = text;
+                    } else if (id === 'word') {
+                        element.setAttribute('placeholder', text.placeholder);
+                    } else {
+                        element.textContent = text;
+                    }
+                }
+            }
+        }
+
+        // DİL DEĞİŞTİR
+        function changeLanguage(lang) {
+            updateUILanguage(lang);
+        }
+
+        // ÇEVİRİ FONKSİYONU
         async function translateWord() {
+            const texts = translations[currentLanguage];
+            
             const word = document.getElementById("word").value.trim();
             const langs = [
                 document.getElementById("lang1").value,
-                document.getElementById("lang2").value,
+                document.getElementById("lang2").value, 
                 document.getElementById("lang3").value,
                 document.getElementById("lang4").value
             ];
 
             if (!word) {
-                alert("Lütfen çevirmek için bir kelime yazın!");
+                alert(texts.noWordError);
                 return;
             }
 
             const uniqueLangs = [...new Set(langs)];
             if (uniqueLangs.length !== langs.length) {
-                alert("Lütfen farklı diller seçin!");
+                alert(texts.sameLangError);
                 return;
             }
 
-            document.getElementById("result").innerHTML = '<div class="loading">⏳ Çeviri yapılıyor...</div>';
+            document.getElementById("result").innerHTML = `<div class="loading">${texts.loading}</div>`;
 
             try {
                 const response = await fetch('/.netlify/functions/translate', {
@@ -360,7 +594,7 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    displayResults(result.data);
+                    displayResults(result.data, texts.results);
                 } else {
                     displayError(result.error);
                 }
@@ -369,7 +603,7 @@
             }
         }
 
-        function displayResults(result) {
+        function displayResults(result, resultsTitle) {
             const resultDiv = document.getElementById("result");
             
             if (result.startsWith("❌") || result.startsWith("⚠️")) {
@@ -377,11 +611,11 @@
                 return;
             }
 
-            const translations = result.split('\n').filter(line => line.trim());
+            const translationLines = result.split('\n').filter(line => line.trim());
             
-            let html = '<h3>🎯 Çeviri Sonuçları:</h3>';
+            let html = `<h3>${resultsTitle}</h3>`;
             
-            translations.forEach(translation => {
+            translationLines.forEach(translation => {
                 const [lang, text] = translation.split(': ');
                 if (lang && text) {
                     html += `
@@ -401,16 +635,25 @@
                 `<div class="error">❌ ${error}</div>`;
         }
 
+        // SAYFA YÜKLENDİĞİNDE
+        window.addEventListener('load', function() {
+            // Kullanıcı dilini ayarla
+            const userLang = getUserLanguage();
+            updateUILanguage(userLang);
+            
+            // Input'a odaklan
+            document.getElementById('word').focus();
+        });
+
+        // Enter tuşu ile çeviri yapma
         document.getElementById('word').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 translateWord();
             }
         });
 
-        // Sayfa yüklendiğinde input'a odaklan
-        window.addEventListener('load', function() {
-            document.getElementById('word').focus();
-        });
+        // Touch event optimizasyonu
+        document.addEventListener('touchstart', function() {}, { passive: true });
     </script>
 </body>
 </html>
