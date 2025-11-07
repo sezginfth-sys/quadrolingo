@@ -1,7 +1,6 @@
 const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
-    // CORS headers
     const headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
@@ -9,19 +8,11 @@ exports.handler = async function(event, context) {
     };
 
     if (event.httpMethod === 'OPTIONS') {
-        return {
-            statusCode: 200,
-            headers,
-            body: ''
-        };
+        return { statusCode: 200, headers, body: '' };
     }
 
     if (event.httpMethod !== 'POST') {
-        return {
-            statusCode: 405,
-            headers,
-            body: JSON.stringify({ error: 'Method not allowed' })
-        };
+        return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
     }
 
     try {
@@ -38,13 +29,19 @@ exports.handler = async function(event, context) {
             };
         }
 
-        let result = "";
-        
-        for (const lang of langs) {
+        // TÜM ÇEVİRİLERİ AYNI ANDA YAP
+        const translationPromises = langs.map(async (lang) => {
             const langCode = getLanguageCode(lang);
-            const translation = await translateWithAPI(word, langCode);
-            result += `${lang}: ${translation}\n`;
-        }
+            try {
+                const translation = await translateWithAPI(word, 'en', langCode);
+                return `${lang}: ${translation}`;
+            } catch (error) {
+                return `${lang}: Çeviri hatası`;
+            }
+        });
+
+        const translations = await Promise.all(translationPromises);
+        const result = translations.join('\n');
 
         return {
             statusCode: 200,
@@ -66,22 +63,46 @@ exports.handler = async function(event, context) {
     }
 };
 
-// MyMemory Translation API (Ücretsiz)
-async function translateWithAPI(text, targetLang) {
+// GELİŞMİŞ ÇEVİRİ API'Sİ
+async function translateWithAPI(text, sourceLang, targetLang) {
+    // 1. MyMemory API (Ücretsiz)
     try {
         const response = await fetch(
-            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`
+            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`
         );
         const data = await response.json();
         
-        if (data.responseStatus === 200) {
+        if (data.responseStatus === 200 && data.responseData.translatedText) {
             return data.responseData.translatedText;
-        } else {
-            return "Çeviri bulunamadı";
         }
     } catch (error) {
-        return "Çeviri hatası";
+        console.log('MyMemory API hatası:', error);
     }
+
+    // 2. LibreTranslate (Yedek API)
+    try {
+        const response = await fetch('https://libretranslate.com/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                q: text,
+                source: sourceLang,
+                target: targetLang,
+                format: 'text'
+            })
+        });
+        
+        const data = await response.json();
+        if (data.translatedText) {
+            return data.translatedText;
+        }
+    } catch (error) {
+        console.log('LibreTranslate API hatası:', error);
+    }
+
+    throw new Error('Çeviri yapılamadı');
 }
 
 function getLanguageCode(langName) {
@@ -97,7 +118,13 @@ function getLanguageCode(langName) {
         'İspanyolca': 'es', 
         'Japonca': 'ja', 
         'Korece': 'ko', 
-        'Portekizce': 'pt'
+        'Portekizce': 'pt',
+        'Lehçe': 'pl',
+        'Hollandaca': 'nl',
+        'İsveççe': 'sv',
+        'Norveççe': 'no',
+        'Danca': 'da',
+        'Fince': 'fi'
     };
     
     return languageMap[langName] || 'en';
