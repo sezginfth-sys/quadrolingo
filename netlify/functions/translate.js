@@ -29,13 +29,15 @@ exports.handler = async function(event, context) {
             };
         }
 
-        // TÜM ÇEVİRİLERİ AYNI ANDA YAP
+        // TÜM ÇEVİRİLERİ AYNI ANDA YAP - DOĞRU KAYNAK DİLLE
         const translationPromises = langs.map(async (lang) => {
             const langCode = getLanguageCode(lang);
             try {
+                // İngilizce'den hedef dile çevir
                 const translation = await translateWithAPI(word, 'en', langCode);
                 return `${lang}: ${translation}`;
             } catch (error) {
+                console.error(`Çeviri hatası (${lang}):`, error);
                 return `${lang}: Çeviri hatası`;
             }
         });
@@ -65,23 +67,9 @@ exports.handler = async function(event, context) {
 
 // GELİŞMİŞ ÇEVİRİ API'Sİ
 async function translateWithAPI(text, sourceLang, targetLang) {
-    // 1. MyMemory API (Ücretsiz)
+    // 1. LibreTranslate API (Daha güvenilir)
     try {
-        const response = await fetch(
-            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`
-        );
-        const data = await response.json();
-        
-        if (data.responseStatus === 200 && data.responseData.translatedText) {
-            return data.responseData.translatedText;
-        }
-    } catch (error) {
-        console.log('MyMemory API hatası:', error);
-    }
-
-    // 2. LibreTranslate (Yedek API)
-    try {
-        const response = await fetch('https://libretranslate.com/translate', {
+        const response = await fetch('https://libretranslate.de/translate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -94,12 +82,28 @@ async function translateWithAPI(text, sourceLang, targetLang) {
             })
         });
         
-        const data = await response.json();
-        if (data.translatedText) {
-            return data.translatedText;
+        if (response.ok) {
+            const data = await response.json();
+            if (data.translatedText) {
+                return data.translatedText;
+            }
         }
     } catch (error) {
-        console.log('LibreTranslate API hatası:', error);
+        console.log('LibreTranslate hatası:', error);
+    }
+
+    // 2. MyMemory API (Yedek)
+    try {
+        const response = await fetch(
+            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`
+        );
+        const data = await response.json();
+        
+        if (data.responseStatus === 200 && data.responseData.translatedText) {
+            return data.responseData.translatedText;
+        }
+    } catch (error) {
+        console.log('MyMemory API hatası:', error);
     }
 
     throw new Error('Çeviri yapılamadı');
