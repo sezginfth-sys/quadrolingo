@@ -461,7 +461,7 @@
     </div>
 
     <script>
-        // ÇOK DİLLİ ARAYÜZ DESTEĞİ
+        // ÇOK DİLLİ ARAYÜZ DESTEĞİ - TAM SÜRÜM
         const translations = {
             'tr': {
                 title: "Quadrolingo - 4 Dilde Ücretsiz Çeviri",
@@ -473,7 +473,29 @@
                 results: "🎯 Çeviri Sonuçları:",
                 loading: "⏳ Çeviri yapılıyor...",
                 sameLangError: "Lütfen farklı diller seçin!",
-                noWordError: "Lütfen çevirmek için bir kelime yazın!"
+                noWordError: "Lütfen çevirmek için bir kelime yazın!",
+                // DİL İSİMLERİ
+                languages: {
+                    'Türkçe': 'Türkçe',
+                    'İngilizce': 'İngilizce',
+                    'Almanca': 'Almanca',
+                    'Fransızca': 'Fransızca',
+                    'İspanyolca': 'İspanyolca',
+                    'İtalyanca': 'İtalyanca',
+                    'Rusça': 'Rusça',
+                    'Çince': 'Çince',
+                    'Japonca': 'Japonca',
+                    'Korece': 'Korece',
+                    'Arapça': 'Arapça',
+                    'Portekizce': 'Portekizce',
+                    'Lehçe': 'Lehçe',
+                    'Hollandaca': 'Hollandaca',
+                    'Yunanca': 'Yunanca',
+                    'İsveççe': 'İsveççe',
+                    'Norveççe': 'Norveççe',
+                    'Danca': 'Danca',
+                    'Fince': 'Fince'
+                }
             },
             'en': {
                 title: "Quadrolingo - Free Translation in 4 Languages", 
@@ -485,7 +507,29 @@
                 results: "🎯 Translation Results:",
                 loading: "⏳ Translating...",
                 sameLangError: "Please select different languages!",
-                noWordError: "Please enter a word to translate!"
+                noWordError: "Please enter a word to translate!",
+                // DİL İSİMLERİ - İNGİLİZCE
+                languages: {
+                    'Türkçe': 'Turkish',
+                    'İngilizce': 'English',
+                    'Almanca': 'German',
+                    'Fransızca': 'French',
+                    'İspanyolca': 'Spanish',
+                    'İtalyanca': 'Italian',
+                    'Rusça': 'Russian',
+                    'Çince': 'Chinese',
+                    'Japonca': 'Japanese',
+                    'Korece': 'Korean',
+                    'Arapça': 'Arabic',
+                    'Portekizce': 'Portuguese',
+                    'Lehçe': 'Polish',
+                    'Hollandaca': 'Dutch',
+                    'Yunanca': 'Greek',
+                    'İsveççe': 'Swedish',
+                    'Norveççe': 'Norwegian',
+                    'Danca': 'Danish',
+                    'Fince': 'Finnish'
+                }
             },
             'de': {
                 title: "Quadrolingo - Kostenlose Übersetzung in 4 Sprachen",
@@ -497,7 +541,29 @@
                 results: "🎯 Übersetzungsergebnisse:",
                 loading: "⏳ Wird übersetzt...", 
                 sameLangError: "Bitte wählen Sie verschiedene Sprachen!",
-                noWordError: "Bitte geben Sie ein Wort zum Übersetzen ein!"
+                noWordError: "Bitte geben Sie ein Wort zum Übersetzen ein!",
+                // DİL İSİMLERİ - ALMANCA
+                languages: {
+                    'Türkçe': 'Türkisch',
+                    'İngilizce': 'Englisch',
+                    'Almanca': 'Deutsch',
+                    'Fransızca': 'Französisch',
+                    'İspanyolca': 'Spanisch',
+                    'İtalyanca': 'Italienisch',
+                    'Rusça': 'Russisch',
+                    'Çince': 'Chinesisch',
+                    'Japonca': 'Japanisch',
+                    'Korece': 'Koreanisch',
+                    'Arapça': 'Arabisch',
+                    'Portekizce': 'Portugiesisch',
+                    'Lehçe': 'Polnisch',
+                    'Hollandaca': 'Niederländisch',
+                    'Yunanca': 'Griechisch',
+                    'İsveççe': 'Schwedisch',
+                    'Norveççe': 'Norwegisch',
+                    'Danca': 'Dänisch',
+                    'Fince': 'Finnisch'
+                }
             }
         };
 
@@ -515,6 +581,29 @@
             return supportedLangs.includes(shortLang) ? shortLang : 'en';
         }
 
+        // DİL SEÇİCİLERİ GÜNCELLE
+        function updateLanguageSelectors(languageNames) {
+            const selectors = ['lang1', 'lang2', 'lang3', 'lang4'];
+            
+            selectors.forEach(selectorId => {
+                const selector = document.getElementById(selectorId);
+                if (selector) {
+                    const currentValue = selector.value;
+                    
+                    // Mevcut option'ları güncelle
+                    Array.from(selector.options).forEach(option => {
+                        const originalValue = option.value;
+                        if (languageNames[originalValue]) {
+                            option.textContent = languageNames[originalValue];
+                        }
+                    });
+                    
+                    // Seçili değeri koru
+                    selector.value = currentValue;
+                }
+            });
+        }
+
         // ARAYÜZÜ GÜNCELLE
         function updateUILanguage(lang) {
             currentLanguage = lang;
@@ -529,7 +618,7 @@
                 metaDesc.setAttribute('content', texts.title);
             }
             
-            // Elementleri güncelle
+            // Ana elementleri güncelle
             const elements = {
                 'appTitle': texts.title,
                 'appSubtitle': texts.subtitle, 
@@ -550,6 +639,9 @@
                     }
                 }
             }
+            
+            // DİL KUTULARINI GÜNCELLE
+            updateLanguageSelectors(texts.languages);
         }
 
         // DİL DEĞİŞTİR
