@@ -5,3 +5,11 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# CORS headers for Netlify
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
