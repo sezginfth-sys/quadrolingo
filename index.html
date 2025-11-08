@@ -4,45 +4,118 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuadroLingo - 4 Dil Çeviri</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>🌍 QuadroLingo</h1>
-        
-        <div class="language-selector">
-            <button onclick="changeLanguage('tr')">Türkçe</button>
-            <button onclick="changeLanguage('ru')">Русский</button>
-            <button onclick="changeLanguage('en')">English</button>
-            <button onclick="changeLanguage('de')">Deutsch</button>
-        </div>
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-globe-europe"></i>
+                <h1>QuadroLingo</h1>
+            </div>
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="tr">Türkçe</button>
+                <button class="lang-btn" data-lang="ru">Русский</button>
+                <button class="lang-btn" data-lang="en">English</button>
+                <button class="lang-btn" data-lang="de">Deutsch</button>
+            </div>
+        </header>
 
-        <div class="translator-container">
+        <main class="main-content">
             <div class="input-section">
-                <textarea id="inputText" placeholder="Çevrilecek metni buraya yazın..."></textarea>
-                <button onclick="translateText()" id="translateBtn">Çevir</button>
+                <div class="input-header">
+                    <h3 data-i18n="inputLabel">Çevrilecek Metin</h3>
+                    <div class="char-count">
+                        <span id="charCount">0</span> <span data-i18n="characters">karakter</span>
+                    </div>
+                </div>
+                <textarea 
+                    id="inputText" 
+                    placeholder="Metninizi buraya yazın..." 
+                    data-i18n-placeholder="inputPlaceholder"
+                ></textarea>
+                <div class="input-actions">
+                    <button id="clearBtn" class="btn-secondary" data-i18n="clear">
+                        <i class="fas fa-eraser"></i> Temizle
+                    </button>
+                    <button id="translateBtn" class="btn-primary" data-i18n="translate">
+                        <i class="fas fa-language"></i> Çevir
+                    </button>
+                </div>
             </div>
 
-            <div class="results-grid">
-                <div class="translation-box">
-                    <h3 id="title-tr">Türkçe</h3>
-                    <div id="result-tr" class="result"></div>
-                </div>
-                <div class="translation-box">
-                    <h3 id="title-ru">Русский</h3>
-                    <div id="result-ru" class="result"></div>
-                </div>
-                <div class="translation-box">
-                    <h3 id="title-en">English</h3>
-                    <div id="result-en" class="result"></div>
-                </div>
-                <div class="translation-box">
-                    <h3 id="title-de">Deutsch</h3>
-                    <div id="result-de" class="result"></div>
+            <div class="results-section">
+                <h3 data-i18n="results">Çeviri Sonuçları</h3>
+                <div class="results-grid">
+                    <div class="translation-card">
+                        <div class="card-header">
+                            <span class="flag">🇹🇷</span>
+                            <h4 data-i18n="turkish">Türkçe</h4>
+                            <button class="copy-btn" data-target="tr">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                        <div id="result-tr" class="translation-text">
+                            <span class="placeholder" data-i18n="waitingTranslation">Çeviri bekleniyor...</span>
+                        </div>
+                    </div>
+
+                    <div class="translation-card">
+                        <div class="card-header">
+                            <span class="flag">🇷🇺</span>
+                            <h4 data-i18n="russian">Rusça</h4>
+                            <button class="copy-btn" data-target="ru">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                        <div id="result-ru" class="translation-text">
+                            <span class="placeholder" data-i18n="waitingTranslation">Çeviri bekleniyor...</span>
+                        </div>
+                    </div>
+
+                    <div class="translation-card">
+                        <div class="card-header">
+                            <span class="flag">🇺🇸</span>
+                            <h4 data-i18n="english">İngilizce</h4>
+                            <button class="copy-btn" data-target="en">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                        <div id="result-en" class="translation-text">
+                            <span class="placeholder" data-i18n="waitingTranslation">Çeviri bekleniyor...</span>
+                        </div>
+                    </div>
+
+                    <div class="translation-card">
+                        <div class="card-header">
+                            <span class="flag">🇩🇪</span>
+                            <h4 data-i18n="german">Almanca</h4>
+                            <button class="copy-btn" data-target="de">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                        <div id="result-de" class="translation-text">
+                            <span class="placeholder" data-i18n="waitingTranslation">Çeviri bekleniyor...</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </main>
+
+        <footer class="footer">
+            <p data-i18n="footer">Google Apps Script ile güçlendirilmiştir</p>
+        </footer>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-sync fa-spin"></i>
+            <p data-i18n="translating">Çevriliyor...</p>
         </div>
     </div>
+
+    <div id="toast" class="toast"></div>
 
     <script src="script.js"></script>
 </body>
