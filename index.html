@@ -3,286 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#667eea">
-    <meta name="description" content="Quadrolingo - Real-time Multi-language Translation">
-    <title>Quadrolingo - Çok Dilli Çeviri</title>
-    
-    <style>
-        /* Tüm CSS kodları buraya - yukarıdaki gibi */
-        body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            text-align: center;
-            padding: 20px;
-            min-height: 100vh;
-            margin: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-        /* ... Diğer CSS kuralları ... */
-    </style>
+    <title>QuadroLingo - 4 Dil Çeviri</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <!-- Arayüz kodları buraya -->
-        <div class="lang-switcher">
-            <button class="lang-btn active" onclick="changeLanguage('tr')">🇹🇷 Türkçe</button>
-            <button class="lang-btn" onclick="changeLanguage('en')">🇺🇸 English</button>
-            <button class="lang-btn" onclick="changeLanguage('de')">🇩🇪 Deutsch</button>
-            <button class="lang-btn" onclick="changeLanguage('fr')">🇫🇷 Français</button>
-            <button class="lang-btn" onclick="changeLanguage('es')">🇪🇸 Español</button>
-            <button class="lang-btn" onclick="changeLanguage('ru')">🇷🇺 Русский</button>
-            <button class="lang-btn" onclick="changeLanguage('zh')">🇨🇳 中文</button>
+        <h1>🌍 QuadroLingo</h1>
+        
+        <div class="language-selector">
+            <button onclick="changeLanguage('tr')">Türkçe</button>
+            <button onclick="changeLanguage('ru')">Русский</button>
+            <button onclick="changeLanguage('en')">English</button>
+            <button onclick="changeLanguage('de')">Deutsch</button>
         </div>
 
-        <div class="header">
-            <img src="https://i.ibb.co/ycpxrytR/ef5f432e-4b33-4971-acb5-13eaff9c8702.png" alt="Quadrolingo Logo" class="logo">
-            <h1 id="appTitle">Quadrolingo</h1>
-            <p class="subtitle" id="appSubtitle">Kelime ve cümleleri 6 dilde anında çevirin</p>
-        </div>
+        <div class="translator-container">
+            <div class="input-section">
+                <textarea id="inputText" placeholder="Çevrilecek metni buraya yazın..."></textarea>
+                <button onclick="translateText()" id="translateBtn">Çevir</button>
+            </div>
 
-        <div class="input-group">
-            <textarea id="textInput" placeholder="Çevirmek istediğiniz kelime veya cümleyi yazın..."></textarea>
-            <div class="char-count" id="charCount">0/500 karakter</div>
-        </div>
-
-        <div class="lang-selectors">
-            <select id="lang1" class="lang-select">
-                <option value="Türkçe">🇹🇷 Türkçe</option>
-                <option value="İngilizce">🇺🇸 İngilizce</option>
-                <option value="Almanca">🇩🇪 Almanca</option>
-                <option value="Fransızca">🇫🇷 Fransızca</option>
-                <option value="İspanyolca">🇪🇸 İspanyolca</option>
-                <option value="Rusça">🇷🇺 Rusça</option>
-                <option value="Çince">🇨🇳 Çince</option>
-            </select>
-
-            <select id="lang2" class="lang-select">
-                <option value="İngilizce">🇺🇸 İngilizce</option>
-                <option value="Türkçe">🇹🇷 Türkçe</option>
-                <option value="Almanca">🇩🇪 Almanca</option>
-                <option value="Fransızca">🇫🇷 Fransızca</option>
-                <option value="İspanyolca">🇪🇸 İspanyolca</option>
-                <option value="Rusça">🇷🇺 Rusça</option>
-                <option value="Çince">🇨🇳 Çince</option>
-            </select>
-
-            <select id="lang3" class="lang-select">
-                <option value="Almanca">🇩🇪 Almanca</option>
-                <option value="Türkçe">🇹🇷 Türkçe</option>
-                <option value="İngilizce">🇺🇸 İngilizce</option>
-                <option value="Fransızca">🇫🇷 Fransızca</option>
-                <option value="İspanyolca">🇪🇸 İspanyolca</option>
-                <option value="Rusça">🇷🇺 Rusça</option>
-                <option value="Çince">🇨🇳 Çince</option>
-            </select>
-
-            <select id="lang4" class="lang-select">
-                <option value="Fransızca">🇫🇷 Fransızca</option>
-                <option value="Türkçe">🇹🇷 Türkçe</option>
-                <option value="İngilizce">🇺🇸 İngilizce</option>
-                <option value="Almanca">🇩🇪 Almanca</option>
-                <option value="İspanyolca">🇪🇸 İspanyolca</option>
-                <option value="Rusça">🇷🇺 Rusça</option>
-                <option value="Çince">🇨🇳 Çince</option>
-            </select>
-        </div>
-
-        <div class="buttons">
-            <button class="btn-primary" onclick="translateText()" id="translateBtn">🌐 Çevir</button>
-            <button class="btn-primary" onclick="clearText()" style="background: #718096;">🗑️ Temizle</button>
-        </div>
-
-        <div id="result">
-            <div class="success" id="welcomeMessage">
-                🚀 Quadrolingo'ya hoş geldiniz!<br>
-                • Kelime veya cümle yazın<br>
-                • 4 dil seçin<br>
-                • Çevir butonuna tıklayın<br>
-                • Çevirileri görün
+            <div class="results-grid">
+                <div class="translation-box">
+                    <h3 id="title-tr">Türkçe</h3>
+                    <div id="result-tr" class="result"></div>
+                </div>
+                <div class="translation-box">
+                    <h3 id="title-ru">Русский</h3>
+                    <div id="result-ru" class="result"></div>
+                </div>
+                <div class="translation-box">
+                    <h3 id="title-en">English</h3>
+                    <div id="result-en" class="result"></div>
+                </div>
+                <div class="translation-box">
+                    <h3 id="title-de">Deutsch</h3>
+                    <div id="result-de" class="result"></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // JavaScript kodları buraya
-        const translations = {
-            'tr': {
-                title: "Quadrolingo - Çok Dilli Çeviri",
-                subtitle: "Kelime ve cümleleri 6 dilde anında çevirin",
-                placeholder: "Çevirmek istediğiniz kelime veya cümleyi yazın...",
-                translateBtn: "🌐 Çevir",
-                clearBtn: "🗑️ Temizle",
-                welcome: "🚀 Quadrolingo'ya hoş geldiniz!",
-                instructions: "• Kelime veya cümle yazın<br>• 4 dil seçin<br>• Çevir butonuna tıklayın<br>• Çevirileri görün",
-                results: "🎯 Çeviri Sonuçları:",
-                loading: "⏳ Çeviri yapılıyor...",
-                sameLangError: "Lütfen farklı diller seçin!",
-                noTextError: "Lütfen çevirmek için bir metin yazın!",
-                charCount: "/500 karakter"
-            },
-            // ... Diğer dillerin çevirileri ...
-        };
-
-        let currentLanguage = 'tr';
-        
-        // BURAYA GOOGLE SCRIPT URL'NİZİ YAPIŞTIRIN
-        const scriptUrl = "https://script.google.com/macros/s/AKfycby-gTaX4uznvAJBHIs7s8X_PIIItqVwhKqMhD27wsL_ZZd0yHTkOTmEnjUXqv9cntk/exec";
-
-        // Kalan JavaScript kodları...
-        document.getElementById('textInput').addEventListener('input', function(e) {
-            const count = e.target.value.length;
-            document.getElementById('charCount').textContent = count + translations[currentLanguage].charCount;
-            
-            if (count > 500) {
-                e.target.value = e.target.value.substring(0, 500);
-                document.getElementById('charCount').textContent = '500' + translations[currentLanguage].charCount;
-            }
-        });
-
-        function updateUILanguage(lang) {
-            currentLanguage = lang;
-            const texts = translations[lang];
-            
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            document.title = texts.title;
-            document.getElementById('appSubtitle').textContent = texts.subtitle;
-            document.getElementById('textInput').placeholder = texts.placeholder;
-            document.getElementById('translateBtn').textContent = texts.translateBtn;
-            document.querySelector('.btn-primary[onclick="clearText()"]').textContent = texts.clearBtn;
-            document.getElementById('welcomeMessage').innerHTML = `${texts.welcome}<br>${texts.instructions}`;
-            
-            const count = document.getElementById('textInput').value.length;
-            document.getElementById('charCount').textContent = count + texts.charCount;
-        }
-
-        function changeLanguage(lang) {
-            updateUILanguage(lang);
-        }
-
-        async function translateText() {
-            const texts = translations[currentLanguage];
-            
-            const text = document.getElementById("textInput").value.trim();
-            const langs = [
-                document.getElementById("lang1").value,
-                document.getElementById("lang2").value, 
-                document.getElementById("lang3").value,
-                document.getElementById("lang4").value
-            ];
-
-            if (!text) {
-                alert(texts.noTextError);
-                return;
-            }
-
-            if (text.length > 500) {
-                alert("Metin 500 karakterden uzun olamaz!");
-                return;
-            }
-
-            const uniqueLangs = [...new Set(langs)];
-            if (uniqueLangs.length !== langs.length) {
-                alert(texts.sameLangError);
-                return;
-            }
-
-            document.getElementById("result").innerHTML = `<div class="loading">${texts.loading}</div>`;
-
-            try {
-                const response = await fetch(scriptUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ 
-                        word: text, 
-                        langs: langs
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    displayResults(result.data, texts.results);
-                } else {
-                    displayError(result.error);
-                }
-            } catch (error) {
-                displayError("Bağlantı hatası: " + error.message);
-            }
-        }
-
-        function clearText() {
-            document.getElementById("textInput").value = "";
-            document.getElementById("charCount").textContent = "0" + translations[currentLanguage].charCount;
-            document.getElementById("result").innerHTML = `
-                <div class="success" id="welcomeMessage">
-                    ${translations[currentLanguage].welcome}<br>
-                    ${translations[currentLanguage].instructions}
-                </div>
-            `;
-        }
-
-        function displayResults(result, resultsTitle) {
-            const resultDiv = document.getElementById("result");
-            
-            if (result.startsWith("❌") || result.startsWith("⚠️")) {
-                resultDiv.innerHTML = `<div class="error">${result}</div>`;
-                return;
-            }
-
-            const translationLines = result.split('\n').filter(line => line.trim());
-            
-            let html = `<h3>${resultsTitle}</h3>`;
-            
-            translationLines.forEach(translation => {
-                const [lang, text] = translation.split(': ');
-                if (lang && text) {
-                    const flag = getFlagForLanguage(lang);
-                    html += `
-                        <div class="translation-item">
-                            <div class="lang-name">${flag} ${lang}</div>
-                            <div class="translation-text">${text}</div>
-                        </div>
-                    `;
-                }
-            });
-            
-            resultDiv.innerHTML = html;
-        }
-
-        function getFlagForLanguage(lang) {
-            const flags = {
-                'Türkçe': '🇹🇷',
-                'İngilizce': '🇺🇸',
-                'Almanca': '🇩🇪',
-                'Fransızca': '🇫🇷',
-                'İspanyolca': '🇪🇸',
-                'Rusça': '🇷🇺',
-                'Çince': '🇨🇳'
-            };
-            return flags[lang] || '🌐';
-        }
-
-        function displayError(error) {
-            document.getElementById("result").innerHTML = 
-                `<div class="error">❌ ${error}</div>`;
-        }
-
-        window.addEventListener('load', function() {
-            document.getElementById('textInput').focus();
-        });
-
-        document.getElementById('textInput').addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 'Enter') {
-                translateText();
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
