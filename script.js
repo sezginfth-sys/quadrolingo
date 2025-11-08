@@ -49,7 +49,7 @@ const translations = {
 let currentLang = 'tr';
 
 // Google Apps Script URL'niz
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwz5JAghBXtB6QZ2nx-k5Ta8fBlW2ZKytRYlZl6PTjUiWpHZur-c2X7S8zwPu7BdNU/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzPnYNlEyfmQk7YJrpd8LQE1iiEwWGlDS9T8K4uE4JOWN8hk_FAS7xk9DZCItnylkE/exec';
 
 function changeLanguage(lang) {
     currentLang = lang;
