@@ -3,8 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuadroLingo - Hızlı Çoklu Çeviri</title>
+    <title>QuadroLingo - 4 Dil Çeviri</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --error: #e63946;
+            --text: #2b2d42;
+            --text-light: #8d99ae;
+            --background: #f8f9fa;
+            --card: #ffffff;
+            --border: #e9ecef;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,303 +28,563 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text);
             min-height: 100vh;
-            padding: 20px;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .app-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
         h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .input-area {
-            margin-bottom: 20px;
-        }
-
-        textarea {
-            width: 100%;
-            height: 100px;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            resize: vertical;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
         }
 
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
         }
 
-        .translate-btn {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        #wordInput {
             width: 100%;
-        }
-
-        .translate-btn:hover {
-            background: #45a049;
-        }
-
-        .translate-btn:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-        }
-
-        .results {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .result-box {
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
             padding: 15px;
-            background: #f9f9f9;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        #wordInput:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .language-card {
+            background: var(--background);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .language-card.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, #4361ee22, #7209b722);
+        }
+
+        .language-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .lang-flag {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .lang-name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--background);
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .results-section {
+            margin-top: 30px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .result-card {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
 
         .result-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #ddd;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .lang-name {
-            font-weight: bold;
-            color: #333;
+        .result-lang {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .result-flag {
+            font-size: 1.5rem;
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: var(--text);
         }
 
         .copy-btn {
-            background: #667eea;
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
+            padding: 6px 12px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
+            transition: background 0.3s ease;
         }
 
         .copy-btn:hover {
-            background: #5a6fd8;
+            background: var(--primary-dark);
         }
 
-        .result-text {
-            min-height: 80px;
-            line-height: 1.4;
-            color: #333;
+        .translation-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text);
+            min-height: 40px;
+        }
+
+        .transliteration {
+            color: var(--text-light);
+            font-style: italic;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            background: var(--background);
+            border-radius: 6px;
+            border-left: 3px solid var(--primary);
         }
 
         .loading {
             opacity: 0.6;
         }
 
-        .char-count {
-            text-align: right;
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 10px;
+        .error {
+            color: var(--error);
+            background: #ffeaea;
+            padding: 15px;
+            border-radius: var(--radius);
+            border-left: 4px solid var(--error);
         }
 
-        .info {
-            text-align: center;
-            margin-top: 15px;
-            color: #666;
+        .char-count {
+            text-align: right;
+            color: var(--text-light);
             font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--text);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
         }
 
         @media (max-width: 768px) {
-            .results {
+            .container {
+                padding: 10px;
+            }
+            
+            .app-card {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .language-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .results-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .actions {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🌍 QuadroLingo - 4'ü Bir Arada Çeviri</h1>
-        
-        <div class="input-area">
-            <textarea id="inputText" placeholder="Çevirmek istediğiniz metni buraya yazın..."></textarea>
-            <div class="char-count">
-                <span id="charCount">0</span> karakter
+        <div class="app-card">
+            <div class="header">
+                <h1>🌍 QuadroLingo</h1>
+                <p class="subtitle">4 dilde anında çeviri ve transliterasyon</p>
             </div>
-            <button class="translate-btn" onclick="translateText()" id="translateBtn">
-                Çevir
-            </button>
-        </div>
 
-        <div class="results">
-            <div class="result-box">
-                <div class="result-header">
-                    <span class="lang-name">🇹🇷 Türkçe</span>
-                    <button class="copy-btn" onclick="copyText('tr')">Kopyala</button>
+            <div class="input-section">
+                <div class="input-group">
+                    <label class="input-label">Çevrilecek Metin</label>
+                    <input type="text" id="wordInput" placeholder="Kelime veya cümle yazın...">
+                    <div class="char-count">
+                        <span id="charCount">0</span> karakter
+                    </div>
                 </div>
-                <div id="result-tr" class="result-text">Çeviri burada görünecek...</div>
-            </div>
 
-            <div class="result-box">
-                <div class="result-header">
-                    <span class="lang-name">🇷🇺 Русский</span>
-                    <button class="copy-btn" onclick="copyText('ru')">Копировать</button>
+                <div class="input-group">
+                    <label class="input-label">Dilleri Seçin (Maksimum 4)</label>
+                    <div class="language-grid" id="languageGrid">
+                        <!-- Diller JavaScript ile eklenecek -->
+                    </div>
                 </div>
-                <div id="result-ru" class="result-text">Перевод появится здесь...</div>
-            </div>
 
-            <div class="result-box">
-                <div class="result-header">
-                    <span class="lang-name">🇺🇸 English</span>
-                    <button class="copy-btn" onclick="copyText('en')">Copy</button>
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="translateText()" id="translateBtn">
+                        <i class="fas fa-language"></i>
+                        Çevir
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearAll()">
+                        <i class="fas fa-eraser"></i>
+                        Temizle
+                    </button>
                 </div>
-                <div id="result-en" class="result-text">Translation will appear here...</div>
             </div>
 
-            <div class="result-box">
-                <div class="result-header">
-                    <span class="lang-name">🇩🇪 Deutsch</span>
-                    <button class="copy-btn" onclick="copyText('de')">Kopieren</button>
+            <div class="results-section">
+                <h3 style="margin-bottom: 20px;">Çeviri Sonuçları</h3>
+                <div class="results-grid" id="resultsGrid">
+                    <!-- Sonuçlar JavaScript ile eklenecek -->
                 </div>
-                <div id="result-de" class="result-text">Übersetzung wird hier erscheinen...</div>
             </div>
-        </div>
-
-        <div class="info">
-            Google Apps Script API ile çalışmaktadır
         </div>
     </div>
 
+    <div id="toast" class="toast"></div>
+
     <script>
-        // MEVCUT ÇALIŞAN GOOGLE APPS SCRIPT URL'NİZ
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwz5JAghBXtB6QZ2nx-k5Ta8fBlW2ZKytRYlZl6PTjUiWpHZur-c2X7S8zwPu7BdNU/exec';
+        // Google Apps Script URL - YENİ DEPLOYMENT URL'NİZİ BURAYA YAZIN
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwWwG9s2GvjeAocoEAs_8B2C7KYkcNoxXy0YDn4r5vbpMzoBivDeh-rskJ61eaRmW0/exec';
 
-        // Karakter sayacı
-        document.getElementById('inputText').addEventListener('input', function() {
-            document.getElementById('charCount').textContent = this.value.length;
+        // Dil listesi
+        const languages = [
+            { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+            { code: 'en', name: 'İngilizce', flag: '🇺🇸' },
+            { code: 'ru', name: 'Rusça', flag: '🇷🇺' },
+            { code: 'de', name: 'Almanca', flag: '🇩🇪' },
+            { code: 'fr', name: 'Fransızca', flag: '🇫🇷' },
+            { code: 'es', name: 'İspanyolca', flag: '🇪🇸' },
+            { code: 'it', name: 'İtalyanca', flag: '🇮🇹' },
+            { code: 'ja', name: 'Japonca', flag: '🇯🇵' },
+            { code: 'ko', name: 'Korece', flag: '🇰🇷' },
+            { code: 'zh', name: 'Çince', flag: '🇨🇳' },
+            { code: 'ar', name: 'Arapça', flag: '🇸🇦' },
+            { code: 'pl', name: 'Lehçe', flag: '🇵🇱' }
+        ];
+
+        let selectedLanguages = [];
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
         });
 
-        // Enter tuşu ile çeviri (Ctrl+Enter)
-        document.getElementById('inputText').addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 'Enter') {
-                translateText();
+        function initializeApp() {
+            renderLanguageGrid();
+            setupEventListeners();
+        }
+
+        function renderLanguageGrid() {
+            const grid = document.getElementById('languageGrid');
+            grid.innerHTML = '';
+
+            languages.forEach(lang => {
+                const card = document.createElement('div');
+                card.className = 'language-card';
+                card.innerHTML = `
+                    <div class="lang-flag">${lang.flag}</div>
+                    <div class="lang-name">${lang.name}</div>
+                `;
+                card.addEventListener('click', () => toggleLanguage(lang));
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleLanguage(lang) {
+            const index = selectedLanguages.findIndex(l => l.code === lang.code);
+            
+            if (index > -1) {
+                // Zaten seçili, kaldır
+                selectedLanguages.splice(index, 1);
+                document.querySelectorAll('.language-card')[languages.findIndex(l => l.code === lang.code)].classList.remove('selected');
+            } else {
+                // Seçili değil, ekle (maksimum 4)
+                if (selectedLanguages.length < 4) {
+                    selectedLanguages.push(lang);
+                    document.querySelectorAll('.language-card')[languages.findIndex(l => l.code === lang.code)].classList.add('selected');
+                } else {
+                    showToast('Maksimum 4 dil seçebilirsiniz', 'error');
+                }
             }
-        });
+        }
+
+        function setupEventListeners() {
+            // Karakter sayacı
+            document.getElementById('wordInput').addEventListener('input', function() {
+                document.getElementById('charCount').textContent = this.value.length;
+            });
+
+            // Enter tuşu ile çeviri
+            document.getElementById('wordInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    translateText();
+                }
+            });
+        }
 
         async function translateText() {
-            const inputText = document.getElementById('inputText').value.trim();
+            const word = document.getElementById('wordInput').value.trim();
             const translateBtn = document.getElementById('translateBtn');
-            
-            if (!inputText) {
-                alert('Lütfen çevrilecek metni girin');
+
+            if (!word) {
+                showToast('Lütfen çevrilecek metni girin', 'error');
                 return;
             }
 
-            // Butonu devre dışı bırak ve loading state
+            if (selectedLanguages.length === 0) {
+                showToast('Lütfen en az bir dil seçin', 'error');
+                return;
+            }
+
+            // Loading state
             translateBtn.disabled = true;
-            translateBtn.textContent = 'Çevriliyor...';
-            
-            // Tüm sonuç alanlarını loading durumuna getir
-            const resultElements = ['tr', 'ru', 'en', 'de'];
-            resultElements.forEach(lang => {
-                const element = document.getElementById(`result-${lang}`);
-                element.classList.add('loading');
-                element.textContent = 'Çevriliyor...';
-            });
+            translateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Çevriliyor...';
+
+            // Sonuçları temizle
+            clearResults();
 
             try {
-                console.log('Çeviri isteği gönderiliyor...');
-                
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        text: inputText,
-                        targets: ['tr', 'ru', 'en', 'de']
+                        word: word,
+                        langs: selectedLanguages.map(lang => lang.name)
                     })
                 });
 
-                console.log('Yanıt alındı:', response);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
                 const data = await response.json();
-                console.log('Çeviri verisi:', data);
-                
-                if (data.translations) {
-                    // Sonuçları göster
-                    data.translations.forEach(translation => {
-                        const element = document.getElementById(`result-${translation.target}`);
-                        if (element) {
-                            element.classList.remove('loading');
-                            // Eğer çeviri metni boşsa veya hata varsa
-                            if (!translation.text || translation.text === inputText) {
-                                element.textContent = 'Çeviri yapılamadı veya aynı metin döndü';
-                            } else {
-                                element.textContent = translation.text;
-                            }
-                        }
-                    });
+
+                if (data.success) {
+                    renderResults(data.translations);
+                    showToast('Çeviri tamamlandı!', 'success');
                 } else {
-                    throw new Error('Geçersiz yanıt formatı');
+                    throw new Error(data.error);
                 }
             } catch (error) {
                 console.error('Çeviri hatası:', error);
-                resultElements.forEach(lang => {
-                    const element = document.getElementById(`result-${lang}`);
-                    element.classList.remove('loading');
-                    element.textContent = 'Çeviri başarısız. Lütfen tekrar deneyin. Hata: ' + error.message;
-                });
+                showToast('Çeviri başarısız: ' + error.message, 'error');
+                
+                // Hata durumunda boş sonuçları göster
+                renderErrorResults();
             } finally {
-                // Butonu tekrar aktif et
                 translateBtn.disabled = false;
-                translateBtn.textContent = 'Çevir';
+                translateBtn.innerHTML = '<i class="fas fa-language"></i> Çevir';
             }
         }
 
-        function copyText(lang) {
-            const text = document.getElementById(`result-${lang}`).textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                // Kopyalandı bildirimi
-                const copyBtn = document.querySelector(`button[onclick="copyText('${lang}')"]`);
-                const originalText = copyBtn.textContent;
-                copyBtn.textContent = '✓ Kopyalandı!';
-                copyBtn.style.background = '#4CAF50';
-                setTimeout(() => {
-                    copyBtn.textContent = originalText;
-                    copyBtn.style.background = '#667eea';
-                }, 2000);
-            }).catch(err => {
-                console.error('Kopyalama hatası:', err);
-                alert('Kopyalama başarısız');
+        function renderResults(translations) {
+            const resultsGrid = document.getElementById('resultsGrid');
+            resultsGrid.innerHTML = '';
+
+            translations.forEach((result, index) => {
+                const lang = selectedLanguages[index];
+                const card = document.createElement('div');
+                card.className = 'result-card';
+                card.innerHTML = `
+                    <div class="result-header">
+                        <div class="result-lang">
+                            <span class="result-flag">${lang.flag}</span>
+                            <span class="result-title">${lang.name}</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyToClipboard('${result.translation.replace(/'/g, "\\'")}')">
+                            <i class="far fa-copy"></i> Kopyala
+                        </button>
+                    </div>
+                    <div class="translation-text">${result.translation}</div>
+                    ${result.transliteration ? `<div class="transliteration">${result.transliteration}</div>` : ''}
+                `;
+                resultsGrid.appendChild(card);
             });
         }
 
-        // Sayfa yüklendiğinde konsola bilgi ver
-        console.log('QuadroLingo yüklendi. Script URL:', SCRIPT_URL);
+        function renderErrorResults() {
+            const resultsGrid = document.getElementById('resultsGrid');
+            resultsGrid.innerHTML = '';
+
+            selectedLanguages.forEach(lang => {
+                const card = document.createElement('div');
+                card.className = 'result-card';
+                card.innerHTML = `
+                    <div class="result-header">
+                        <div class="result-lang">
+                            <span class="result-flag">${lang.flag}</span>
+                            <span class="result-title">${lang.name}</span>
+                        </div>
+                    </div>
+                    <div class="translation-text" style="color: var(--error);">Çeviri yapılamadı</div>
+                `;
+                resultsGrid.appendChild(card);
+            });
+        }
+
+        function clearResults() {
+            document.getElementById('resultsGrid').innerHTML = '';
+        }
+
+        function clearAll() {
+            document.getElementById('wordInput').value = '';
+            document.getElementById('charCount').textContent = '0';
+            selectedLanguages = [];
+            document.querySelectorAll('.language-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            clearResults();
+            showToast('Temizlendi', 'info');
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Panoya kopyalandı!', 'success');
+            }).catch(err => {
+                console.error('Kopyalama hatası:', err);
+                showToast('Kopyalama başarısız', 'error');
+            });
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
     </script>
 </body>
 </html>
