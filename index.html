@@ -131,6 +131,13 @@
             margin-bottom: 10px;
         }
 
+        .info {
+            text-align: center;
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
         @media (max-width: 768px) {
             .results {
                 grid-template-columns: 1fr;
@@ -185,9 +192,14 @@
                 <div id="result-de" class="result-text">Übersetzung wird hier erscheinen...</div>
             </div>
         </div>
+
+        <div class="info">
+            Google Apps Script API ile çalışmaktadır
+        </div>
     </div>
 
     <script>
+        // MEVCUT ÇALIŞAN GOOGLE APPS SCRIPT URL'NİZ
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwz5JAghBXtB6QZ2nx-k5Ta8fBlW2ZKytRYlZl6PTjUiWpHZur-c2X7S8zwPu7BdNU/exec';
 
         // Karakter sayacı
@@ -224,6 +236,8 @@
             });
 
             try {
+                console.log('Çeviri isteği gönderiliyor...');
+                
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     headers: {
@@ -235,7 +249,14 @@
                     })
                 });
 
+                console.log('Yanıt alındı:', response);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
                 const data = await response.json();
+                console.log('Çeviri verisi:', data);
                 
                 if (data.translations) {
                     // Sonuçları göster
@@ -243,7 +264,12 @@
                         const element = document.getElementById(`result-${translation.target}`);
                         if (element) {
                             element.classList.remove('loading');
-                            element.textContent = translation.text || 'Çeviri yapılamadı';
+                            // Eğer çeviri metni boşsa veya hata varsa
+                            if (!translation.text || translation.text === inputText) {
+                                element.textContent = 'Çeviri yapılamadı veya aynı metin döndü';
+                            } else {
+                                element.textContent = translation.text;
+                            }
                         }
                     });
                 } else {
@@ -254,7 +280,7 @@
                 resultElements.forEach(lang => {
                     const element = document.getElementById(`result-${lang}`);
                     element.classList.remove('loading');
-                    element.textContent = 'Çeviri başarısız. Lütfen tekrar deneyin.';
+                    element.textContent = 'Çeviri başarısız. Lütfen tekrar deneyin. Hata: ' + error.message;
                 });
             } finally {
                 // Butonu tekrar aktif et
@@ -267,16 +293,22 @@
             const text = document.getElementById(`result-${lang}`).textContent;
             navigator.clipboard.writeText(text).then(() => {
                 // Kopyalandı bildirimi
-                const originalText = document.querySelector(`[onclick="copyText('${lang}')"]`).textContent;
-                document.querySelector(`[onclick="copyText('${lang}')"]`).textContent = 'Kopyalandı!';
+                const copyBtn = document.querySelector(`button[onclick="copyText('${lang}')"]`);
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✓ Kopyalandı!';
+                copyBtn.style.background = '#4CAF50';
                 setTimeout(() => {
-                    document.querySelector(`[onclick="copyText('${lang}')"]`).textContent = originalText;
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = '#667eea';
                 }, 2000);
             }).catch(err => {
                 console.error('Kopyalama hatası:', err);
                 alert('Kopyalama başarısız');
             });
         }
+
+        // Sayfa yüklendiğinde konsola bilgi ver
+        console.log('QuadroLingo yüklendi. Script URL:', SCRIPT_URL);
     </script>
 </body>
 </html>
