@@ -3,120 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuadroLingo - 4 Dil Çeviri</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <title>QuadroLingo - Hızlı Çoklu Çeviri</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .input-area {
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .translate-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .translate-btn:hover {
+            background: #45a049;
+        }
+
+        .translate-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .results {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .result-box {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f9f9f9;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .lang-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .copy-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .result-text {
+            min-height: 80px;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .loading {
+            opacity: 0.6;
+        }
+
+        .char-count {
+            text-align: right;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .results {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <div class="logo">
-                <i class="fas fa-globe-europe"></i>
-                <h1>QuadroLingo</h1>
+        <h1>🌍 QuadroLingo - 4'ü Bir Arada Çeviri</h1>
+        
+        <div class="input-area">
+            <textarea id="inputText" placeholder="Çevirmek istediğiniz metni buraya yazın..."></textarea>
+            <div class="char-count">
+                <span id="charCount">0</span> karakter
             </div>
-            <div class="language-switcher">
-                <button class="lang-btn active" data-lang="tr">Türkçe</button>
-                <button class="lang-btn" data-lang="ru">Русский</button>
-                <button class="lang-btn" data-lang="en">English</button>
-                <button class="lang-btn" data-lang="de">Deutsch</button>
-            </div>
-        </header>
+            <button class="translate-btn" onclick="translateText()" id="translateBtn">
+                Çevir
+            </button>
+        </div>
 
-        <main class="main-content">
-            <div class="input-section">
-                <div class="input-header">
-                    <h3 data-i18n="inputLabel">Çevrilecek Metin</h3>
-                    <div class="char-count">
-                        <span id="charCount">0</span> <span data-i18n="characters">karakter</span>
-                    </div>
+        <div class="results">
+            <div class="result-box">
+                <div class="result-header">
+                    <span class="lang-name">🇹🇷 Türkçe</span>
+                    <button class="copy-btn" onclick="copyText('tr')">Kopyala</button>
                 </div>
-                <textarea 
-                    id="inputText" 
-                    placeholder="Metninizi buraya yazın..." 
-                    data-i18n-placeholder="inputPlaceholder"
-                ></textarea>
-                <div class="input-actions">
-                    <button id="clearBtn" class="btn-secondary" data-i18n="clear">
-                        <i class="fas fa-eraser"></i> Temizle
-                    </button>
-                    <button id="translateBtn" class="btn-primary" data-i18n="translate">
-                        <i class="fas fa-language"></i> Çevir
-                    </button>
-                </div>
+                <div id="result-tr" class="result-text">Çeviri burada görünecek...</div>
             </div>
 
-            <div class="results-section">
-                <h3 data-i18n="results">Çeviri Sonuçları</h3>
-                <div class="results-grid">
-                    <div class="translation-card">
-                        <div class="card-header">
-                            <span class="flag">🇹🇷</span>
-                            <h4 data-i18n="turkish">Türkçe</h4>
-                            <button class="copy-btn" data-target="tr">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <div id="result-tr" class="translation-text">
-                            <span class="placeholder" data-i18n="waitingTranslation">Çeviri bekleniyor...</span>
-                        </div>
-                    </div>
-
-                    <div class="translation-card">
-                        <div class="card-header">
-                            <span class="flag">🇷🇺</span>
-                            <h4 data-i18n="russian">Rusça</h4>
-                            <button class="copy-btn" data-target="ru">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <div id="result-ru" class="translation-text">
-                            <span class="placeholder" data-i18n="waitingTranslation">Çeviri bekleniyor...</span>
-                        </div>
-                    </div>
-
-                    <div class="translation-card">
-                        <div class="card-header">
-                            <span class="flag">🇺🇸</span>
-                            <h4 data-i18n="english">İngilizce</h4>
-                            <button class="copy-btn" data-target="en">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <div id="result-en" class="translation-text">
-                            <span class="placeholder" data-i18n="waitingTranslation">Çeviri bekleniyor...</span>
-                        </div>
-                    </div>
-
-                    <div class="translation-card">
-                        <div class="card-header">
-                            <span class="flag">🇩🇪</span>
-                            <h4 data-i18n="german">Almanca</h4>
-                            <button class="copy-btn" data-target="de">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <div id="result-de" class="translation-text">
-                            <span class="placeholder" data-i18n="waitingTranslation">Çeviri bekleniyor...</span>
-                        </div>
-                    </div>
+            <div class="result-box">
+                <div class="result-header">
+                    <span class="lang-name">🇷🇺 Русский</span>
+                    <button class="copy-btn" onclick="copyText('ru')">Копировать</button>
                 </div>
+                <div id="result-ru" class="result-text">Перевод появится здесь...</div>
             </div>
-        </main>
 
-        <footer class="footer">
-            <p data-i18n="footer">Google Apps Script ile güçlendirilmiştir</p>
-        </footer>
-    </div>
+            <div class="result-box">
+                <div class="result-header">
+                    <span class="lang-name">🇺🇸 English</span>
+                    <button class="copy-btn" onclick="copyText('en')">Copy</button>
+                </div>
+                <div id="result-en" class="result-text">Translation will appear here...</div>
+            </div>
 
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading-spinner">
-            <i class="fas fa-sync fa-spin"></i>
-            <p data-i18n="translating">Çevriliyor...</p>
+            <div class="result-box">
+                <div class="result-header">
+                    <span class="lang-name">🇩🇪 Deutsch</span>
+                    <button class="copy-btn" onclick="copyText('de')">Kopieren</button>
+                </div>
+                <div id="result-de" class="result-text">Übersetzung wird hier erscheinen...</div>
+            </div>
         </div>
     </div>
 
-    <div id="toast" class="toast"></div>
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwz5JAghBXtB6QZ2nx-k5Ta8fBlW2ZKytRYlZl6PTjUiWpHZur-c2X7S8zwPu7BdNU/exec';
 
-    <script src="script.js"></script>
+        // Karakter sayacı
+        document.getElementById('inputText').addEventListener('input', function() {
+            document.getElementById('charCount').textContent = this.value.length;
+        });
+
+        // Enter tuşu ile çeviri (Ctrl+Enter)
+        document.getElementById('inputText').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                translateText();
+            }
+        });
+
+        async function translateText() {
+            const inputText = document.getElementById('inputText').value.trim();
+            const translateBtn = document.getElementById('translateBtn');
+            
+            if (!inputText) {
+                alert('Lütfen çevrilecek metni girin');
+                return;
+            }
+
+            // Butonu devre dışı bırak ve loading state
+            translateBtn.disabled = true;
+            translateBtn.textContent = 'Çevriliyor...';
+            
+            // Tüm sonuç alanlarını loading durumuna getir
+            const resultElements = ['tr', 'ru', 'en', 'de'];
+            resultElements.forEach(lang => {
+                const element = document.getElementById(`result-${lang}`);
+                element.classList.add('loading');
+                element.textContent = 'Çevriliyor...';
+            });
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: inputText,
+                        targets: ['tr', 'ru', 'en', 'de']
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.translations) {
+                    // Sonuçları göster
+                    data.translations.forEach(translation => {
+                        const element = document.getElementById(`result-${translation.target}`);
+                        if (element) {
+                            element.classList.remove('loading');
+                            element.textContent = translation.text || 'Çeviri yapılamadı';
+                        }
+                    });
+                } else {
+                    throw new Error('Geçersiz yanıt formatı');
+                }
+            } catch (error) {
+                console.error('Çeviri hatası:', error);
+                resultElements.forEach(lang => {
+                    const element = document.getElementById(`result-${lang}`);
+                    element.classList.remove('loading');
+                    element.textContent = 'Çeviri başarısız. Lütfen tekrar deneyin.';
+                });
+            } finally {
+                // Butonu tekrar aktif et
+                translateBtn.disabled = false;
+                translateBtn.textContent = 'Çevir';
+            }
+        }
+
+        function copyText(lang) {
+            const text = document.getElementById(`result-${lang}`).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                // Kopyalandı bildirimi
+                const originalText = document.querySelector(`[onclick="copyText('${lang}')"]`).textContent;
+                document.querySelector(`[onclick="copyText('${lang}')"]`).textContent = 'Kopyalandı!';
+                setTimeout(() => {
+                    document.querySelector(`[onclick="copyText('${lang}')"]`).textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Kopyalama hatası:', err);
+                alert('Kopyalama başarısız');
+            });
+        }
+    </script>
 </body>
 </html>
