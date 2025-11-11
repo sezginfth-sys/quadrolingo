@@ -1,66 +1,119 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import "./style.css";
 
 export default function App() {
-  const [text, setText] = useState("");
-  const [translations, setTranslations] = useState([]);
+  const [input, setInput] = useState("");
+  const [translations, setTranslations] = useState({});
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const langs = ["Türkçe", "İngilizce", "Rusça", "Almanca", "Fransızca"];
+  // Google Script URL (seninki)
+  const API_URL =
+    "https://script.google.com/macros/s/AKfycbxpCJ3wPivoCi0i7MuQsUZpA5QhPQnVIagBz2cjPlALID-Cdwo4VIFwG0iymLMzsn6aaw/exec";
 
-  const translate = async () => {
-    if (!text.trim()) return;
-    setLoading(true);
-    setTranslations([]);
-    try {
-      const res = await fetch(
-        "https://script.google.com/macros/s/AKfycbxpCJ3wPivoCi0i7MuQsUZpA5QhPQnVIagBz2cjPlALID-Cdwo4VIFwG0iymLMzsn6aaw/exec?q=" +
-          encodeURIComponent(text)
-      );
-      const data = await res.json();
-      setTranslations(data.translations || []);
-    } catch (err) {
-      alert("Çeviri hatası: " + err.message);
+  const languages = [
+    { code: "tr", name: "Türkçe" },
+    { code: "en", name: "İngilizce" },
+    { code: "ru", name: "Rusça" },
+    { code: "de", name: "Almanca" },
+    { code: "fr", name: "Fransızca" },
+  ];
+
+  const [selected, setSelected] = useState(["en", "ru", "de", "fr"]);
+
+  const handleTranslate = async () => {
+    if (!input) {
+      setError("Lütfen bir kelime girin.");
+      return;
     }
-    setLoading(false);
+    setError("");
+    setLoading(true);
+    setTranslations({});
+
+    try {
+      const responses = await Promise.all(
+        selected.map(async (lang) => {
+          const res = await fetch(`${API_URL}?q=${encodeURIComponent(input)}&target=${lang}`);
+          if (!res.ok) throw new Error("Network");
+          const data = await res.json();
+          return { lang, text: data.translatedText || "Çevrilemedi" };
+        })
+      );
+
+      const result = {};
+      responses.forEach((r) => (result[r.lang] = r.text));
+      setTranslations(result);
+    } catch (err) {
+      setError("Çeviri hatası: Failed to fetch. Google Script erişimi kontrol edin.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="bg-white shadow-xl rounded-2xl p-8 w-[90%] max-w-lg text-center">
-      <img src="/logo.png" alt="Quadrolingo" className="mx-auto w-20 mb-4" />
-      <h1 className="text-3xl font-extrabold text-purple-700">Quadrolingo</h1>
-      <p className="text-gray-600 mb-4">Bir kelimeyi 4 dilde anında çevirin</p>
+    <div className="container">
+      <div className="card">
+        <img src="/logo.png" alt="Quadrolingo" className="logo" />
 
-      <input
-        className="border border-purple-300 rounded-lg px-4 py-2 w-full mb-3 text-center"
-        placeholder="Çevirmek istediğiniz kelimeyi yazın..."
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
+        <h1 className="title">Quadrolingo</h1>
+        <p className="subtitle">Bir kelimeyi 4 dilde anında çevirin</p>
 
-      <button
-        onClick={translate}
-        disabled={loading}
-        className="bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700 w-full transition"
-      >
-        🌍 {loading ? "Çeviriliyor..." : "Çevir"}
-      </button>
+        <input
+          type="text"
+          placeholder="Çevirmek istediğiniz kelimeyi yazın..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="input"
+        />
 
-      <div className="mt-5 text-left bg-purple-50 rounded-xl p-4">
-        {translations.length === 0 ? (
-          <p className="text-gray-500">
-            🚀 Quadrolingo'ya hoş geldiniz!  
-            <br />• Bir kelime yazın  
-            <br />• Çevir butonuna tıklayın  
-            <br />• Çevirileri görün
-          </p>
-        ) : (
-          translations.map((t, i) => (
-            <p key={i} className="text-gray-800 mb-1">
-              <strong>{langs[i]}:</strong> {t}
+        <div className="selectors">
+          {selected.map((lang, i) => (
+            <select
+              key={i}
+              value={lang}
+              onChange={(e) => {
+                const newSelected = [...selected];
+                newSelected[i] = e.target.value;
+                setSelected(newSelected);
+              }}
+              className="select"
+            >
+              {languages.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.name}
+                </option>
+              ))}
+            </select>
+          ))}
+        </div>
+
+        <button className="btn" onClick={handleTranslate} disabled={loading}>
+          🌐 {loading ? "Çeviriliyor..." : "Çevir"}
+        </button>
+
+        <div className="output">
+          {error && <p className="error">{error}</p>}
+
+          {!error && Object.keys(translations).length === 0 && !loading && (
+            <div className="welcome">
+              🚀 Quadrolingo'ya hoş geldiniz!
+              <ul>
+                <li>Bir kelime yazın</li>
+                <li>4 dil seçin</li>
+                <li>Çevir butonuna tıklayın</li>
+                <li>Çevirileri görün</li>
+              </ul>
+            </div>
+          )}
+
+          {Object.entries(translations).map(([lang, text]) => (
+            <p key={lang}>
+              <strong>{languages.find((l) => l.code === lang)?.name}:</strong> {text}
             </p>
-          ))
-        )}
+          ))}
+        </div>
       </div>
     </div>
   );
 }
+
